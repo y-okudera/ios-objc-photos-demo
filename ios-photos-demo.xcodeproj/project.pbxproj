@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B66634071F795352006F85C9 /* PhotoPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B66634061F795352006F85C9 /* PhotoPreviewViewController.m */; };
+		B66634091F795362006F85C9 /* PhotoPreviewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B66634081F795362006F85C9 /* PhotoPreviewViewController.storyboard */; };
+		B666340C1F795515006F85C9 /* PhotoPreviewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B666340B1F795515006F85C9 /* PhotoPreviewTableViewCell.m */; };
 		B67CFF4B1F716E9800018FB4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B67CFF4A1F716E9800018FB4 /* AppDelegate.m */; };
 		B67CFF4E1F716E9800018FB4 /* PhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B67CFF4D1F716E9800018FB4 /* PhotosViewController.m */; };
 		B67CFF511F716E9800018FB4 /* PhotosViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B67CFF4F1F716E9800018FB4 /* PhotosViewController.storyboard */; };
@@ -29,6 +32,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B66634051F795352006F85C9 /* PhotoPreviewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewViewController.h; sourceTree = "<group>"; };
+		B66634061F795352006F85C9 /* PhotoPreviewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewViewController.m; sourceTree = "<group>"; };
+		B66634081F795362006F85C9 /* PhotoPreviewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PhotoPreviewViewController.storyboard; sourceTree = "<group>"; };
+		B666340A1F795515006F85C9 /* PhotoPreviewTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewTableViewCell.h; sourceTree = "<group>"; };
+		B666340B1F795515006F85C9 /* PhotoPreviewTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewTableViewCell.m; sourceTree = "<group>"; };
 		B67CFF461F716E9800018FB4 /* ios-photos-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-photos-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B67CFF491F716E9800018FB4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B67CFF4A1F716E9800018FB4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -66,6 +74,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B66634041F795330006F85C9 /* PhotoPreview */ = {
+			isa = PBXGroup;
+			children = (
+				B66634051F795352006F85C9 /* PhotoPreviewViewController.h */,
+				B66634061F795352006F85C9 /* PhotoPreviewViewController.m */,
+				B66634081F795362006F85C9 /* PhotoPreviewViewController.storyboard */,
+			);
+			path = PhotoPreview;
+			sourceTree = "<group>";
+		};
 		B67CFF3D1F716E9800018FB4 = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +136,8 @@
 			children = (
 				B67CFF731F716FDE00018FB4 /* PhotoCollectionViewCell.h */,
 				B67CFF741F716FDE00018FB4 /* PhotoCollectionViewCell.m */,
+				B666340A1F795515006F85C9 /* PhotoPreviewTableViewCell.h */,
+				B666340B1F795515006F85C9 /* PhotoPreviewTableViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -125,6 +145,7 @@
 		B67CFF6F1F716EAA00018FB4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				B66634041F795330006F85C9 /* PhotoPreview */,
 				B67CFF721F716EE900018FB4 /* Photos */,
 				B67CFF711F716EDB00018FB4 /* Startup */,
 			);
@@ -246,6 +267,7 @@
 				B67CFF561F716E9800018FB4 /* LaunchScreen.storyboard in Resources */,
 				B67CFF531F716E9800018FB4 /* Assets.xcassets in Resources */,
 				B67CFF511F716E9800018FB4 /* PhotosViewController.storyboard in Resources */,
+				B66634091F795362006F85C9 /* PhotoPreviewViewController.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +289,8 @@
 				B67CFF751F716FDE00018FB4 /* PhotoCollectionViewCell.m in Sources */,
 				B67CFF591F716E9800018FB4 /* main.m in Sources */,
 				B67CFF4B1F716E9800018FB4 /* AppDelegate.m in Sources */,
+				B66634071F795352006F85C9 /* PhotoPreviewViewController.m in Sources */,
+				B666340C1F795515006F85C9 /* PhotoPreviewTableViewCell.m in Sources */,
 				B67CFF781F71717F00018FB4 /* PhotoLibraryRequester.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -423,7 +447,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.st-ventures.ios-photos-demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -437,7 +461,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.st-ventures.ios-photos-demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

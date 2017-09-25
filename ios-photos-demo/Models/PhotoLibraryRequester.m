@@ -10,6 +10,23 @@
 
 @implementation PhotoLibraryRequester
 
+#pragma mark - class methods
+
++ (void)loadThumbnailImageForAsset:(PHAsset *)photoAsset resultHandler:(ResultHandler)resultHandler {
+    CGSize targetSize = CGSizeMake(160, 160);
+    [self loadImageForAsset:photoAsset
+                 targetSize:targetSize
+              resultHandler:resultHandler];
+}
+
++ (void)loadPreviewImageForAsset:(PHAsset *)photoAsset resultHandler:(ResultHandler)resultHandler {
+    [self loadImageForAsset:photoAsset
+                 targetSize:PHImageManagerMaximumSize
+              resultHandler:resultHandler];
+}
+
+#pragma mark - instance methods
+
 - (void)execute {
     
     __weak typeof(self) wself = self;
@@ -36,6 +53,22 @@
 }
 
 #pragma mark - private methods
+
++ (void)loadImageForAsset:(PHAsset *)photoAsset
+               targetSize:(CGSize)targetSize
+            resultHandler:(ResultHandler)resultHandler {
+    
+    PHImageRequestOptions *imageRequestOptions = [PHImageRequestOptions new];
+    imageRequestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[PHImageManager defaultManager] requestImageForAsset:photoAsset
+                                                   targetSize:targetSize
+                                                  contentMode:PHImageContentModeAspectFit
+                                                      options:imageRequestOptions
+                                                resultHandler:resultHandler];
+    });
+}
 
 - (void)fetchAssets {
     

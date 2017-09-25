@@ -9,6 +9,8 @@
 @import Foundation;
 @import Photos;
 
+typedef void (^ResultHandler)(UIImage *result, NSDictionary *info);
+
 @protocol PhotoLibraryRequestStatus <NSObject>
 
 /**
@@ -36,5 +38,19 @@
 
 @interface PhotoLibraryRequester : NSObject
 @property (weak, nonatomic) id<PhotoLibraryRequestStatus>delegate;
+
+/**
+ 写真選択画面用のサムネイル画像読み込み
+ */
++ (void)loadThumbnailImageForAsset:(PHAsset *)photoAsset resultHandler:(ResultHandler)resultHandler;
+
+/**
+ 写真プレビュー画面のオリジナルサイズの画像読み込み
+ */
++ (void)loadPreviewImageForAsset:(PHAsset *)photoAsset resultHandler:(ResultHandler)resultHandler;
+
+/**
+ PhotoLibraryのアクセス要求
+ */
 - (void)execute;
 @end

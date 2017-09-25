@@ -8,8 +8,10 @@
 
 @import UIKit;
 
+/**
+ 写真一覧画面
+ */
 @interface PhotosViewController : UIViewController
-
 
 @end
 

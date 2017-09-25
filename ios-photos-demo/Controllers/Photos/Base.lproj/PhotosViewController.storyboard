@@ -50,7 +50,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="176" height="176"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7MN-E4-zAv">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7MN-E4-zAv">
                                                     <rect key="frame" x="8" y="8" width="160" height="160"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -94,9 +94,9 @@
                                 <action selector="didTapCancelButton:" destination="BYZ-38-t0r" id="AJJ-kD-zmw"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="決定" id="lUS-E9-gUT">
+                        <barButtonItem key="rightBarButtonItem" title="プレビュー" id="lUS-E9-gUT">
                             <connections>
-                                <action selector="didTapDoneButton:" destination="BYZ-38-t0r" id="blY-iv-a6w"/>
+                                <action selector="didTapPreviewButton:" destination="BYZ-38-t0r" id="Zgg-mN-hN3"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

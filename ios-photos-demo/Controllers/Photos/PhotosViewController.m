@@ -7,23 +7,23 @@
 //
 
 #import "PhotoCollectionViewCell.h"
-#import "PhotosViewController.h"
 #import "PhotoLibraryRequester.h"
+#import "PhotoPreviewViewController.h"
+#import "PhotosViewController.h"
 
 @interface PhotosViewController () <PhotoLibraryRequestStatus>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (nonatomic) PhotoLibraryRequester *photoLibraryRequester;
 @property (nonatomic) NSArray<PHAsset *> *photoAssets;
-@property (nonatomic) NSMutableArray<NSData *> *selectedPhotoDataArray;
+@property (nonatomic) NSMutableArray<PHAsset *> *selectedPhotoAssets;
 @end
 
 @implementation PhotosViewController
 
-#pragma mark - life cycle
+#pragma mark - view life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self setup];
 }
 
@@ -36,24 +36,22 @@
 #pragma mark - actions
 
 - (IBAction)didTapCancelButton:(UIBarButtonItem *)sender {
-    NSLog(@"データ件数(リセット前): %ld", self.selectedPhotoDataArray.count);
     
     // 選択状態のItemを全て非選択状態にする
     for (NSIndexPath *indexPath in self.collectionView.indexPathsForSelectedItems) {
         [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
     }
     
-    self.selectedPhotoDataArray = [@[] mutableCopy];
+    self.selectedPhotoAssets = [@[] mutableCopy];
     [self.collectionView reloadData];
     
-    NSLog(@"データ件数(リセット後): %ld", self.selectedPhotoDataArray.count);
+    NSLog(@"データ件数(リセット後): %ld", self.selectedPhotoAssets.count);
 }
 
-- (IBAction)didTapDoneButton:(UIBarButtonItem *)sender {
-    NSLog(@"データ件数: %ld", self.selectedPhotoDataArray.count);
-    for (NSData *data in self.selectedPhotoDataArray) {
-        NSLog(@"データサイズ: %ld", data.length);
-    }
+- (IBAction)didTapPreviewButton:(UIBarButtonItem *)sender {
+    NSLog(@"データ件数: %ld", self.selectedPhotoAssets.count);
+    PhotoPreviewViewController *vc = [PhotoPreviewViewController createWithPhotoAssets:self.selectedPhotoAssets];
+    [self.navigationController pushViewController:vc animated:true];
 }
 
 #pragma mark - private methods
@@ -61,7 +59,7 @@
 - (void)setup {
     
     self.collectionView.allowsMultipleSelection = YES;
-    self.selectedPhotoDataArray = [@[] mutableCopy];
+    self.selectedPhotoAssets = [@[] mutableCopy];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(photoLibraryRequest)
                                                  name:UIApplicationDidBecomeActiveNotification
@@ -78,11 +76,11 @@
 #pragma mark - PhotoLibraryRequestStatus
 
 - (void)notDetermined {
-    NSLog(@"%@ %s [Line: %d]", NSStringFromClass([self class]), __func__, __LINE__);
+    NSLog(@"%s [Line: %d]", __PRETTY_FUNCTION__, __LINE__);
 }
 
 - (void)authorized:(NSArray<PHAsset *> *)photoAssets {
-    NSLog(@"%@ %s [Line: %d]", NSStringFromClass([self class]), __func__, __LINE__);
+    NSLog(@"%s [Line: %d]", __PRETTY_FUNCTION__, __LINE__);
     
     self.photoAssets = photoAssets;
     
@@ -94,7 +92,7 @@
 }
 
 - (void)denied {
-    NSLog(@"%@ %s [Line: %d]", NSStringFromClass([self class]), __func__, __LINE__);
+    NSLog(@"%s [Line: %d]", __PRETTY_FUNCTION__, __LINE__);
     
 #warning 設定アプリに飛ばすことは可能だが、設定アプリで権限が変更されるとアプリが終了する
     // 参考: https://stackoverflow.com/questions/39269232/correct-way-to-handle-change-in-settings-for-ios
@@ -123,10 +121,11 @@
 }
 
 - (void)restricted {
-    NSLog(@"%@ %s [Line: %d]", NSStringFromClass([self class]), __func__, __LINE__);
+    NSLog(@"%s [Line: %d]", __PRETTY_FUNCTION__, __LINE__);
 }
 
 #pragma mark - UICollectionViewDataSource
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     
@@ -135,47 +134,38 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoCollectionViewCell *cell = (PhotoCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:[PhotoCollectionViewCell identifier]
+    
+    NSString *cellIdentifier = [PhotoCollectionViewCell identifier];
+    PhotoCollectionViewCell *cell = (PhotoCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier
                                                                                                          forIndexPath:indexPath];
     
     cell.selectedView.hidden = !cell.isSelected;
+    cell.photoAsset = self.photoAssets[indexPath.row];
     
     if (cell.imageView.image) {
         cell.imageView.image = nil;
     }
     
-    CGSize targetSize = CGSizeMake(160, 160);
-    PHImageRequestOptions *imageRequestOptions = [PHImageRequestOptions new];
-    imageRequestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    typedef void (^ResultHandler)(UIImage *result, NSDictionary *info);
     ResultHandler resultHandler = ^(UIImage *result, NSDictionary *info) {
         cell.imageView.image = result;
         [cell layoutSubviews];
     };
-    
-    __weak typeof(self) wself = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[PHImageManager defaultManager] requestImageForAsset:wself.photoAssets[indexPath.row]
-                                                   targetSize:targetSize
-                                                  contentMode:PHImageContentModeAspectFit
-                                                      options:imageRequestOptions
-                                                resultHandler:resultHandler];
-    });
+    [PhotoLibraryRequester loadThumbnailImageForAsset:cell.photoAsset
+                                        resultHandler:resultHandler];
     
     return cell;
 }
 
 #pragma mark - UICollectionViewDelegate
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     PhotoCollectionViewCell *cell = (PhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
     cell.selected = YES;
     cell.selectedView.hidden = NO;
     
-    NSData *imageData = [[NSData alloc] initWithData:UIImagePNGRepresentation(cell.imageView.image)];
-    if (![self.selectedPhotoDataArray containsObject:imageData]) {
-        [self.selectedPhotoDataArray addObject:imageData];
+    if (![self.selectedPhotoAssets containsObject:cell.photoAsset]) {
+        [self.selectedPhotoAssets addObject:cell.photoAsset];
     }
 }
 
@@ -185,9 +175,8 @@
     cell.selected = NO;
     cell.selectedView.hidden = YES;
     
-    NSData *imageData = [[NSData alloc] initWithData:UIImagePNGRepresentation(cell.imageView.image)];
-    if ([self.selectedPhotoDataArray containsObject:imageData]) {
-        [self.selectedPhotoDataArray removeObject:imageData];
+    if ([self.selectedPhotoAssets containsObject:cell.photoAsset]) {
+        [self.selectedPhotoAssets removeObject:cell.photoAsset];
     }
 }
 
